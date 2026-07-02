@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Premium Surprise for My Love</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for Premium Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <canvas id="cursor-particles"></canvas>
+
+    <audio id="bg-music">
+        <source src="music/happy_birthday.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="kutty-music">
+        <source src="music/thangamey.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="celebration-bg">
+        <div id="dj-lights-container">
+            <div class="light-beam beam-left"></div>
+            <div class="light-beam beam-right"></div>
+            <div class="light-beam beam-center"></div>
+        </div>
+
+        <div class="ambient-balloons">
+            <div class="balloon bg-b1"></div>
+            <div class="balloon bg-b2"></div>
+            <div class="balloon bg-b3"></div>
+            <div class="balloon bg-b4"></div>
+        </div>
+
+        <div class="sparkles-container">
+            <div class="sparkle s1"></div>
+            <div class="sparkle s2"></div>
+            <div class="sparkle s3"></div>
+            <div class="sparkle s4"></div>
+            <div class="sparkle s5"></div>
+        </div>
+    </div>
+
+    <div class="global-decor">
+        <div class="f-heart ch-1">❤️</div>
+        <div class="f-heart ch-2">💖</div>
+        <div class="f-heart ch-3">💕</div>
+        <div class="f-heart ch-4">💓</div>
+        <div class="f-heart ch-5">💗</div>
+        <div class="f-emoji ce-1">🐣</div>
+        <div class="f-emoji ce-2">🐣</div>
+        <div class="f-emoji ce-3">🐣</div>
+        <div class="f-balloon fb-1" style="opacity: 0.5;"></div>
+        <div class="f-balloon fb-5" style="opacity: 0.5;"></div>
+    </div>
+
+    <!-- PHASE 0: COUNTDOWN GATEWAY -->
+    <div id="countdown-screen">
+        <div class="countdown-container">
+            <div class="countdown-left">
+                <div class="birthday-girl-wrapper">
+                    <img src="pictures/sri17.jpeg" alt="Birthday Girl" class="birthday-girl-img">
+                    <div class="birthday-cap-css">
+                        <div class="cap-cone"></div>
+                        <div class="cap-text">Happy<br>Birthday</div>
+                        <div class="cap-pompom"></div>
+                        <div class="cap-base"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="countdown-right glass-panel">
+                <h1 class="countdown-title">Happy Birthday<br>Thangoo</h1>
+                <p class="countdown-subtitle">Countdown to your special day...</p>
+                <div class="timer-blocks">
+                    <div class="timer-block"><span id="cd-days">00</span><small>Days</small></div>
+                    <div class="timer-block"><span id="cd-hours">00</span><small>Hours</small></div>
+                    <div class="timer-block"><span id="cd-minutes">00</span><small>Minutes</small></div>
+                    <div class="timer-block"><span id="cd-seconds">00</span><small>Seconds</small></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="cake-room-screen" style="display: none; opacity: 0;">
+        <div id="festive-bg-decor">
+            <div class="f-balloon fb-1"></div>
+            <div class="f-balloon fb-2"></div>
+            <div class="f-balloon fb-3"></div>
+            <div class="f-balloon fb-4"></div>
+            <div class="f-balloon fb-5"></div>
+            <div class="floor-gifts">
+                <div class="f-gift fg-1"></div>
+                <div class="f-gift fg-2"></div>
+                <div class="f-gift fg-3"></div>
+            </div>
+            <div class="gold-sparkle gs-1"></div>
+            <div class="gold-sparkle gs-2"></div>
+            <div class="gold-sparkle gs-3"></div>
+        </div>
+        
+        <div id="cake-scene">
+            <div class="spotlight"></div>
+            <div class="cake-wrapper" style="position: relative; width: 200px; height: 180px; margin-top: 50px;">
+                <!-- Left Half -->
+                <div class="cake-container cake-half-left" style="position: absolute; top:0; left:0; width:100%; height:100%; clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);">
+                    <div class="cake-tier top-tier"></div>
+                    <div class="cake-tier middle-tier"></div>
+                    <div class="cake-tier bottom-tier"></div>
+                </div>
+                
+                <!-- Right Half -->
+                <div class="cake-container cake-half-right" style="position: absolute; top:0; left:0; width:100%; height:100%; clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);">
+                    <div class="cake-tier top-tier"></div>
+                    <div class="cake-tier middle-tier"></div>
+                    <div class="cake-tier bottom-tier"></div>
+                </div>
+                
+                <div class="candle" id="the-candle">
+                    <div class="flame" id="the-flame"></div>
+                    <div class="smoke" id="the-smoke"></div>
+                </div>
+            </div>
+            
+            <div class="cake-interactions">
+                <p id="wish-text" style="display: none;">Make a wish...</p>
+                <button id="initial-btn" class="premium-btn primary-btn">Blow the candle</button>
+                <button id="blow-btn" class="premium-btn secondary-btn" style="display: none;">Blow Now</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-content" style="display: none; opacity: 0;">
+        <section class="hero-section">
+            <div class="hero-text-container">
+                <p class="hero-sub-heading">A SPECIAL DAY FOR MY SPECIAL PERSON</p>
+                <h1 class="main-heading">Happy Birthday,<br>My love</h1>
+                <div class="hero-image-wrapper">
+                    <img src="pictures/sri1.jpeg" alt="My Love" class="hero-center-img">
+                </div>
+            </div>
+        </section>
+
+        <section class="lyrics-gallery-section">
+            <div class="lyrics-text">
+                Epomae happy ya iru😁
+            </div>
+            <div class="gallery-container">
+                <img src="pictures/sri2.jpeg" class="collage-img img1" alt="Memory">
+                <img src="pictures/sri3.jpeg" class="collage-img img2" alt="Memory">
+                <img src="pictures/sri4.jpeg" class="collage-img img3" alt="Memory">
+                <img src="pictures/sri5.jpeg" class="collage-img img4" alt="Memory">
+                <img src="pictures/sri6.jpeg" class="collage-img img5" alt="Memory">
+            </div>
+        </section>
+
+        <section class="flip-cards-section">
+            <h2 class="sub-heading kutty-title-style">SPECIAL THANKS</h2>
+            <div class="cards-grid">
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel">
+                            <div class="card-icon">🤍</div>
+                            <h3>Mami</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <img src="pictures/sri7.jpeg" alt="Mami">
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel">
+                            <div class="card-icon">🐣</div>
+                            <h3>Pulayar</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <img src="pictures/sri8.jpeg" alt="Pulayar">
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel">
+                            <div class="card-icon">💍</div>
+                            <h3>Thango</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <img src="pictures/sri9.jpeg" alt="Thango">
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front glass-panel">
+                            <div class="card-icon">👨‍👩‍👧‍👦</div>
+                            <h3>Mine</h3>
+                        </div>
+                        <div class="flip-card-back">
+                            <img src="pictures/sri10.jpeg" alt="Mine">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button id="open-riddle-btn" class="premium-btn primary-btn mt-50">Kutty Lines For You</button>
+        </section>
+    </div>
+
+    <div id="riddle-overlay" class="fullscreen-overlay">
+        <div class="blur-bg"></div>
+        <div class="riddle-content glass-panel">
+            <h2 class="riddle-question">What is the pet name you love to call me?</h2>
+            <div class="input-boxes">
+                <input type="text" maxlength="1" class="pwd-box glass-input">
+                <input type="text" maxlength="1" class="pwd-box glass-input">
+                <input type="text" maxlength="1" class="pwd-box glass-input">
+                <input type="text" maxlength="1" class="pwd-box glass-input">
+                <input type="text" maxlength="1" class="pwd-box glass-input">
+                <input type="text" maxlength="1" class="pwd-box glass-input">
+            </div>
+            <p id="riddle-error">Incorrect. Try again.</p>
+            
+            <div id="riddle-hints-container" style="display: none;">
+                <p class="hint-title">Need some help?</p>
+                <div class="hint-boxes">
+                    <div class="hint-box wrapped" data-hint="Tamil word (also a song name)">
+                        <div class="hint-front">🎁 Hint 1</div>
+                        <div class="hint-back glass-panel"></div>
+                    </div>
+                    <div class="hint-box wrapped" data-hint="Starts with T">
+                        <div class="hint-front">🎁 Hint 2</div>
+                        <div class="hint-back glass-panel"></div>
+                    </div>
+                    <div class="hint-box wrapped" data-hint="Ends with O">
+                        <div class="hint-front">🎁 Hint 3</div>
+                        <div class="hint-back glass-panel"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="check-riddle-btn" class="premium-btn primary-btn mt-30">Unlock</button>
+        </div>
+    </div>
+
+    <!-- PHASE 4 WRAPPER -->
+    <div id="kutty-lines-wrapper" style="display: none; opacity: 0; position: relative;">
+        
+        <div id="celebration-bg-2">
+            <div class="ambient-balloons">
+                <div class="balloon bg-b1"></div>
+                <div class="balloon bg-b2"></div>
+                <div class="balloon bg-b3"></div>
+            </div>
+        </div>
+
+        <section class="scroll-telling-section" id="kutty-lines">
+            <h2 class="sub-heading kutty-title kutty-title-style">Kutty lines for you, Thango</h2>
+            <div class="scroll-telling-container">
+                
+                <div class="st-lyrics">
+                    <div class="st-lyric lyric-1">நட்ட நடு ராத்திரியில்<br>வெத்தலைய போட்டுகிட்டு<br>உன் நெனப்ப மெல்லுறேனே<br>நான் சுகமா<br><span class="scroll-hint">(Scroll down)</span></div>
+                    <div class="st-lyric lyric-2">என்ன கொறை என் பொறப்பில்<br>அத்தனைக்கும் நான் பொறுப்பா<br>உன்ன விட்டா எனக்கு<br>யார் இருக்கா<br><span class="scroll-hint">(Scroll down)</span></div>
+                    <div class="st-lyric lyric-3">ஒன்ன சுத்தி வாரேன்… ….ஏ<br>ஒன்ன சுத்தி வாரேன்<br>மூச்சிரைக்க நானும்<br>கண்ணாலொறு சாடை போதும்<br>உசுர கட்டி கொத்தாக தாரேன்<br><span class="scroll-hint">(Scroll down)</span></div>
+                    <div class="st-lyric lyric-4">தங்கமே தங்கமே<br>எம்பட தங்கமே<br>தங்கமே<br>தங்கமே தங்கமே<br>எம்பட தங்கமே</div>
+                </div>
+                
+                <div class="st-images">
+                    <div class="st-img-wrapper img-st-1"><img src="pictures/sri11.jpeg" alt="Memory"></div>
+                    <div class="st-img-wrapper img-st-2"><img src="pictures/sri6.jpeg" alt="Memory"></div>
+                    <div class="st-img-wrapper img-st-3"><img src="pictures/sri13.jpeg" alt="Memory"></div>
+                    <div class="st-img-wrapper img-st-4"><img src="pictures/sri14.jpeg" alt="Memory"></div>
+                </div>
+            </div>
+            
+            <div class="explore-gifts-section phase-4-5-reveal">
+                <div class="premium-floating-orbs">
+                    <div class="orb p-orb-1"></div>
+                    <div class="orb p-orb-2"></div>
+                    <div class="orb p-orb-3"></div>
+                    <div class="orb p-orb-4"></div>
+                </div>
+                <div class="premium-picture-frame">
+                    <video id="reveal-video" src="videos/Sri1.mp4" class="premium-finale-img" autoplay loop muted playsinline></video>
+                </div>
+                <h2 class="elegant-text golden-glow">Happy Birthday Thangoo</h2>
+                <button id="explore-gifts-btn" class="premium-btn primary-btn">Softcopy Gifts</button>
+            </div>
+        </section>
+        
+    </div>
+
+    <div id="gift-game-screen" class="fullscreen-overlay glass-overlay" style="display:none; opacity:0; z-index: 999;">
+        <div class="interactive-zone" id="gift-zone">
+            <h2 class="intro-title" id="gift-title">A Delivery Just For You...</h2>
+            
+            <div id="hit-box-area">
+                <div id="strike-spark"></div>
+                <div id="premium-hammer">
+                    <svg viewBox="0 0 100 100" width="100%" height="100%">
+                        <defs>
+                            <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#fecfef" />
+                                <stop offset="50%" stop-color="#ff7675" />
+                                <stop offset="100%" stop-color="#fad0c4" />
+                            </linearGradient>
+                            <linearGradient id="headGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#ff9a9e" />
+                                <stop offset="50%" stop-color="#ff7675" />
+                                <stop offset="100%" stop-color="#d63031" />
+                            </linearGradient>
+                            <linearGradient id="metalRing" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#dfe6e9" />
+                                <stop offset="50%" stop-color="#ffffff" />
+                                <stop offset="100%" stop-color="#b2bec3" />
+                            </linearGradient>
+                        </defs>
+                        <rect x="40" y="45" width="20" height="45" rx="10" fill="url(#handleGrad)" />
+                        <rect x="43" y="48" width="6" height="39" rx="3" fill="rgba(255,255,255,0.7)" />
+                        <rect x="40" y="35" width="20" height="15" fill="url(#metalRing)" />
+                        <rect x="15" y="15" width="70" height="25" rx="12" fill="url(#headGrad)" />
+                        <rect x="20" y="17" width="60" height="6" rx="3" fill="rgba(255,255,255,0.8)" />
+                        <rect x="17" y="20" width="6" height="15" rx="2" fill="rgba(255,255,255,0.5)" />
+                        <path d="M 15 18 C 10 18, 10 37, 15 37 Z" fill="#ff7675" />
+                        <path d="M 85 18 C 90 18, 90 37, 85 37 Z" fill="#ff7675" />
+                    </svg>
+                </div>
+                <div id="premium-gift">
+                    <svg viewBox="0 0 200 200" width="100%" height="100%">
+                        <defs>
+                            <linearGradient id="boxFront" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ff9a9e" />
+                                <stop offset="100%" stop-color="#ff7675" />
+                            </linearGradient>
+                            <linearGradient id="lidFront" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#fecfef" />
+                                <stop offset="100%" stop-color="#fad0c4" />
+                            </linearGradient>
+                            <linearGradient id="ribbonPink" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#ff7675" />
+                                <stop offset="100%" stop-color="#d63031" />
+                            </linearGradient>
+                        </defs>
+                        <ellipse cx="100" cy="180" rx="75" ry="12" fill="rgba(0,0,0,0.15)" />
+                        <rect x="35" y="90" width="130" height="85" rx="8" fill="url(#boxFront)" />
+                        <rect x="40" y="90" width="10" height="85" fill="rgba(255,255,255,0.3)" />
+                        <rect x="85" y="90" width="30" height="85" fill="url(#ribbonPink)" />
+                        <rect x="87" y="90" width="6" height="85" fill="rgba(255,255,255,0.4)" />
+                        <rect x="25" y="65" width="150" height="25" rx="6" fill="url(#lidFront)" />
+                        <rect x="30" y="67" width="140" height="6" rx="3" fill="rgba(255,255,255,0.5)" />
+                        <rect x="85" y="65" width="30" height="25" fill="url(#ribbonPink)" />
+                        <rect x="87" y="65" width="6" height="25" fill="rgba(255,255,255,0.4)" />
+                        <path d="M 100 65 C 50 10, 20 50, 95 65 Z" fill="url(#ribbonPink)" />
+                        <path d="M 100 65 C 150 10, 180 50, 105 65 Z" fill="url(#ribbonPink)" />
+                        <circle cx="100" cy="63" r="12" fill="#d63031" />
+                        <circle cx="97" cy="60" r="4" fill="rgba(255,255,255,0.6)" />
+                    </svg>
+                </div>
+            </div>
+            <p class="intro-hint" id="gift-hint">Hit the gift box 3 times using the hammer!</p>
+        </div>
+
+        <div id="orbs-scene">
+            <canvas id="heart-particles-canvas"></canvas>
+            <h2 class="orb-title kutty-title-style">Our Memories</h2>
+            <div class="polaroid-container">
+                <div class="polaroid unlocked glass-panel" id="vid-card-1" data-video="videos/Srib1.mp4" data-index="1">
+                    <img src="pictures/sri2.jpeg" class="polaroid-bg" alt="bg">
+                    <div class="polaroid-inner"><div class="lock-icon">🤍</div></div>
+                </div>
+                <div class="polaroid locked glass-panel" id="vid-card-2" data-video="videos/Srib2.mp4" data-index="2">
+                    <img src="pictures/sri3.jpeg" class="polaroid-bg" alt="bg">
+                    <div class="polaroid-inner"><div class="lock-icon">🐣</div></div>
+                </div>
+                <div class="polaroid locked glass-panel" id="vid-card-3" data-video="videos/Srib3.mp4" data-index="3">
+                    <img src="pictures/sri4.jpeg" class="polaroid-bg" alt="bg">
+                    <div class="polaroid-inner"><div class="lock-icon">💍</div></div>
+                </div>
+                <div class="polaroid locked glass-panel" id="vid-card-4" data-video="videos/Srib4.mp4" data-index="4">
+                    <img src="pictures/sri5.jpeg" class="polaroid-bg" alt="bg">
+                    <div class="polaroid-inner"><div class="lock-icon">👨‍👩‍👧‍👦</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cinematic White Flash Transition -->
+    <div id="cinematic-flash" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:9999; opacity:0; pointer-events:none;"></div>
+
+    <!-- Theater Mode Video Player -->
+    <div id="video-overlay" class="fullscreen-overlay theater-mode" style="display:none; opacity:0; z-index:10000;">
+        <button id="close-video" class="glass-btn icon-btn">&times;</button>
+        <div class="theater-player-container">
+            <video id="orb-player" playsinline></video>
+            <div class="theater-controls glass-panel">
+                <button id="custom-play-btn" class="control-btn">▶</button>
+                <button id="custom-pause-btn" class="control-btn" style="display:none;">⏸</button>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="video-progress"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
