@@ -301,7 +301,7 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
 
 /* THEATER MODE VIDEO PLAYER */
 .theater-mode { background: rgba(255, 230, 240, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center; }
-.theater-player-container { position: relative; width: 90%; max-width: 350px; height: 75vh; border-radius: 20px; overflow: hidden; box-shadow: 0 0 50px rgba(255, 107, 107, 0.6); background: #000; display: flex; flex-direction: column; margin: 0 auto; }
+.theater-player-container { position: relative; width: 90vw; max-width: 450px; height: 80vh; border-radius: 20px; overflow: hidden; box-shadow: 0 0 50px rgba(255, 107, 107, 0.6); background: #000; display: flex; flex-direction: column; margin: 0 auto; }
 #orb-player { width: 100%; flex-grow: 1; }
 
 .theater-controls { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px; background: rgba(255, 255, 255, 0.15); border-top: 1px solid rgba(255,255,255,0.2); width: 100%; box-sizing: border-box; }
@@ -311,7 +311,7 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
 .progress-bar-container { flex-grow: 1; height: 8px; background: rgba(255,255,255,0.2); border-radius: 4px; overflow: hidden; position: relative; }
 .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #ff7675, #ff9a9e); box-shadow: 0 0 10px #ff7675; transition: width 0.1s linear; }
 
-#close-video { position: absolute; top: 30px; right: 40px; font-size: 2.5rem; width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; cursor: pointer; transition: all 0.3s; z-index: 20000; display: flex; justify-content: center; align-items: center; line-height: 0; padding-bottom: 5px;}
+#close-video { position: absolute; top: 15px; right: 15px; font-size: 2.5rem; width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; cursor: pointer; transition: all 0.3s; z-index: 20000; display: flex; justify-content: center; align-items: center; line-height: 0; padding-bottom: 5px;}
 #close-video:hover { background: rgba(255, 107, 129, 0.8); transform: rotate(90deg); box-shadow: 0 0 20px rgba(255, 107, 129, 0.6); }
 
 @media screen and (max-width: 768px) {

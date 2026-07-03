@@ -682,7 +682,8 @@ function onYouTubeIframeAPIReady() {
             'rel': 0,
             'showinfo': 0,
             'modestbranding': 1,
-            'playsinline': 1
+            'playsinline': 1,
+            'origin': window.location.origin
         },
         events: {
             'onStateChange': onPlayerStateChange
