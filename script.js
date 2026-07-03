@@ -742,4 +742,3 @@ function onPlayerStateChange(event) {
         }});
     }
 }
-});
