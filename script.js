@@ -110,15 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPlayingIndex = 1;
 
   // --- PHASE 0: COUNTDOWN TIMER ---
-    // Target: July 9th of the current year (or next year if passed)
-    const now = new Date();
-    let targetYear = now.getFullYear();
-    if (now.getMonth() > 6 || (now.getMonth() === 6 && now.getDate() >= 9)) {
-        // If it's past July 9th this year, target next year
-        // We will just target 2026 manually based on prompt, but dynamic is better:
-        targetYear = 2026; 
-    }
-    const targetDate = new Date(`July 9, ${targetYear} 00:00:00`).getTime();
+    // Target: July 9th 2026 at midnight (ISO 8601 format ensures no NaN crashes)
+    const targetDate = new Date('2026-07-09T00:00:00').getTime();
     
     let countdownTimer;
 
@@ -150,11 +143,11 @@ document.addEventListener("DOMContentLoaded", () => {
         gsap.to(countdownScreen, { opacity: 0, duration: 1, onComplete: () => {
             countdownScreen.style.display = 'none';
             cakeRoom.style.display = 'flex';
-            gsap.to(cakeRoom, { opacity: 1, duration: 1 });
+            gsap.fromTo(cakeRoom, { opacity: 0 }, { opacity: 1, duration: 1 });
         }});
     }
 
-    if(skipCdBtn) {
+    if (skipCdBtn) {
         skipCdBtn.addEventListener('click', () => {
             clearInterval(countdownTimer);
             transitionToCakeRoom();
