@@ -628,9 +628,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     }
-
-   let progressInterval;
-
     // POLAROID INTERACTION LOGIC
     polaroids.forEach(polaroid => {
         polaroid.addEventListener('click', function() {
