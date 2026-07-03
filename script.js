@@ -636,6 +636,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+   let progressInterval;
+
     // POLAROID INTERACTION LOGIC
     polaroids.forEach(polaroid => {
         polaroid.addEventListener('click', function() {
@@ -644,9 +646,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const videoId = this.getAttribute('data-video');
             currentPlayingIndex = parseInt(this.getAttribute('data-index'));
 
-            if (ytPlayer && ytPlayer.loadVideoById) {
-                ytPlayer.loadVideoById(videoId);
-                ytPlayer.pauseVideo(); // Start paused
+            // Load the video into the YouTube player
+            if (window.ytPlayer && window.ytPlayer.loadVideoById) {
+                window.ytPlayer.loadVideoById(videoId);
+                window.ytPlayer.pauseVideo();
             }
 
             videoOverlay.style.display = 'flex';
@@ -659,7 +662,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     closeVideo.addEventListener('click', () => {
-        if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+        if (window.ytPlayer && window.ytPlayer.pauseVideo) window.ytPlayer.pauseVideo();
+        clearInterval(progressInterval);
         gsap.to(videoOverlay, { opacity: 0, duration: 0.5, onComplete: () => {
             videoOverlay.style.display = 'none';
             videoProgress.style.width = '0%';
@@ -667,11 +671,82 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     customPlayBtn.addEventListener('click', () => {
-        if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
+        if (window.ytPlayer && window.ytPlayer.playVideo) window.ytPlayer.playVideo();
     });
 
     customPauseBtn.addEventListener('click', () => {
-        if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
+        if (window.ytPlayer && window.ytPlayer.pauseVideo) window.ytPlayer.pauseVideo();
     });
 
-});
+}); // <-- THIS BRACE CLOSES YOUR DOMContentLoaded EVENT
+
+// === YOUTUBE API SETUP (MUST BE OUTSIDE THE MAIN WRAPPER) ===
+window.ytPlayer = null;
+
+function onYouTubeIframeAPIReady() {
+    window.ytPlayer = new YT.Player('orb-player', {
+        height: '100%',
+        width: '100%',
+        playerVars: {
+            'controls': 0, // Hides default YouTube controls so your custom ones show
+            'rel': 0,
+            'showinfo': 0,
+            'modestbranding': 1,
+            'playsinline': 1
+        },
+        events: {
+            'onStateChange': onPlayerStateChange
+        }
+    });
+}
+
+function onPlayerStateChange(event) {
+    // When video plays: hide play button, show pause button, start progress bar
+    if (event.data == YT.PlayerState.PLAYING) {
+        document.getElementById('custom-play-btn').style.display = 'none';
+        document.getElementById('custom-pause-btn').style.display = 'flex';
+        
+        progressInterval = setInterval(() => {
+            if(window.ytPlayer && window.ytPlayer.getCurrentTime) {
+                const percentage = (window.ytPlayer.getCurrentTime() / window.ytPlayer.getDuration()) * 100;
+                document.getElementById('video-progress').style.width = percentage + '%';
+            }
+        }, 100);
+    } 
+    // When video pauses: show play button, hide pause button
+    else if (event.data == YT.PlayerState.PAUSED) {
+        document.getElementById('custom-pause-btn').style.display = 'none';
+        document.getElementById('custom-play-btn').style.display = 'flex';
+        clearInterval(progressInterval);
+    }
+    // When video ends: trigger the next polaroid unlock animation
+    else if (event.data == YT.PlayerState.ENDED) {
+        clearInterval(progressInterval);
+        document.getElementById('custom-pause-btn').style.display = 'none';
+        document.getElementById('custom-play-btn').style.display = 'flex';
+        
+        const videoOverlay = document.getElementById('video-overlay');
+        gsap.to(videoOverlay, { opacity: 0, duration: 1, delay: 0.5, onComplete: () => {
+            videoOverlay.style.display = 'none';
+            document.getElementById('video-progress').style.width = '0%';
+            
+            const currentPolaroid = document.getElementById(`vid-card-${currentPlayingIndex}`);
+            if(currentPolaroid) currentPolaroid.classList.add('watched');
+            
+            if (currentPlayingIndex < 4) {
+                const nextPolaroid = document.getElementById(`vid-card-${currentPlayingIndex + 1}`);
+                if (nextPolaroid) {
+                    nextPolaroid.classList.remove('locked');
+                    nextPolaroid.classList.add('unlocked');
+                    
+                    const lockIcon = nextPolaroid.querySelector('.lock-icon');
+                    gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
+                    gsap.fromTo(nextPolaroid, 
+                        { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
+                        { scale: 1.05, boxShadow: "0 0 40px rgba(0, 184, 148, 0.8)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }
+                    );
+                }
+            }
+        }});
+    }
+}
