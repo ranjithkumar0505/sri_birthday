@@ -571,7 +571,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 'rel': 0,
                 'modestbranding': 1,
                 'showinfo': 0,
-                'iv_load_policy': 3
+                'iv_load_policy': 3,
+                'origin': window.location.origin
             },
             events: {
                 'onStateChange': onPlayerStateChange
