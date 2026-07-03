@@ -565,87 +565,113 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const videoProgress = document.getElementById('video-progress');
 
+    let ytPlayer;
+    let progressInterval;
+
+    window.onYouTubeIframeAPIReady = function() {
+        ytPlayer = new YT.Player('orb-player', {
+            height: '100%',
+            width: '100%',
+            playerVars: {
+                'controls': 0,
+                'disablekb': 1,
+                'rel': 0,
+                'modestbranding': 1,
+                'showinfo': 0,
+                'iv_load_policy': 3
+            },
+            events: {
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    };
+
+    function startProgressInterval() {
+        clearInterval(progressInterval);
+        progressInterval = setInterval(() => {
+            if (ytPlayer && ytPlayer.getCurrentTime && ytPlayer.getDuration) {
+                const duration = ytPlayer.getDuration();
+                if (duration > 0) {
+                    const percentage = (ytPlayer.getCurrentTime() / duration) * 100;
+                    videoProgress.style.width = percentage + '%';
+                }
+            }
+        }, 100);
+    }
+
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING) {
+            startProgressInterval();
+            customPlayBtn.style.display = 'none';
+            customPauseBtn.style.display = 'flex';
+        } else {
+            clearInterval(progressInterval);
+            if (event.data == YT.PlayerState.PAUSED) {
+                customPauseBtn.style.display = 'none';
+                customPlayBtn.style.display = 'flex';
+            } else if (event.data == YT.PlayerState.ENDED) {
+                gsap.to(videoOverlay, { opacity: 0, duration: 1, delay: 0.5, onComplete: () => {
+                    videoOverlay.style.display = 'none';
+                    videoProgress.style.width = '0%';
+                    
+                    // Sequential Unlock Animation
+                    const currentPolaroid = document.getElementById(`vid-card-${currentPlayingIndex}`);
+                    currentPolaroid.classList.add('watched');
+                    
+                    if (currentPlayingIndex < 4) {
+                        const nextPolaroid = document.getElementById(`vid-card-${currentPlayingIndex + 1}`);
+                        nextPolaroid.classList.remove('locked');
+                        nextPolaroid.classList.add('unlocked');
+                        
+                        // Fancy Unlock Animation
+                        const lockIcon = nextPolaroid.querySelector('.lock-icon');
+                        gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
+                        gsap.fromTo(nextPolaroid, 
+                            { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
+                            { scale: 1.05, boxShadow: "0 0 40px rgba(255, 118, 117, 0.8)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }
+                        );
+                    }
+                }});
+            }
+        }
+    }
+
     // POLAROID INTERACTION LOGIC
     polaroids.forEach(polaroid => {
         polaroid.addEventListener('click', function() {
             if (this.classList.contains('locked')) return; 
 
-            const videoSrc = this.getAttribute('data-video');
+            const videoId = this.getAttribute('data-video');
             currentPlayingIndex = parseInt(this.getAttribute('data-index'));
 
-            orbPlayer.src = videoSrc;
+            if (ytPlayer && ytPlayer.loadVideoById) {
+                ytPlayer.loadVideoById(videoId);
+                ytPlayer.pauseVideo(); // Start paused
+            }
+
             videoOverlay.style.display = 'flex';
             gsap.to(videoOverlay, { opacity: 1, duration: 0.5 });
             
-            // Do NOT autoplay. Let the user manually play.
             customPlayBtn.style.display = 'flex';
             customPauseBtn.style.display = 'none';
+            videoProgress.style.width = '0%';
         });
     });
 
-    // Toggle play/pause by touching the video itself
-    orbPlayer.addEventListener('click', () => {
-        if (orbPlayer.paused) {
-            orbPlayer.play();
-            customPlayBtn.style.display = 'none';
-            customPauseBtn.style.display = 'flex';
-        } else {
-            orbPlayer.pause();
-            customPauseBtn.style.display = 'none';
-            customPlayBtn.style.display = 'flex';
-        }
-    });
-
-    // Theater Mode Progress Bar Update
-    orbPlayer.addEventListener('timeupdate', () => {
-        const percentage = (orbPlayer.currentTime / orbPlayer.duration) * 100;
-        videoProgress.style.width = percentage + '%';
-    });
-
     closeVideo.addEventListener('click', () => {
-        orbPlayer.pause();
+        if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
         gsap.to(videoOverlay, { opacity: 0, duration: 0.5, onComplete: () => {
             videoOverlay.style.display = 'none';
-            orbPlayer.src = "";
             videoProgress.style.width = '0%';
         }});
     });
 
     customPlayBtn.addEventListener('click', () => {
-        orbPlayer.play();
-        customPlayBtn.style.display = 'none';
-        customPauseBtn.style.display = 'flex';
+        if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
     });
 
     customPauseBtn.addEventListener('click', () => {
-        orbPlayer.pause();
-        customPauseBtn.style.display = 'none';
-        customPlayBtn.style.display = 'flex';
-    });
-
-    orbPlayer.addEventListener('ended', () => {
-        gsap.to(videoOverlay, { opacity: 0, duration: 1, delay: 0.5, onComplete: () => {
-            videoOverlay.style.display = 'none';
-            videoProgress.style.width = '0%';
-            
-            // Sequential Unlock Animation
-            const currentPolaroid = document.getElementById(`vid-card-${currentPlayingIndex}`);
-            currentPolaroid.classList.add('watched');
-            
-            if (currentPlayingIndex < 4) {
-                const nextPolaroid = document.getElementById(`vid-card-${currentPlayingIndex + 1}`);
-                nextPolaroid.classList.remove('locked');
-                nextPolaroid.classList.add('unlocked');
-                
-                // Fancy Unlock Animation
-                const lockIcon = nextPolaroid.querySelector('.lock-icon');
-                gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
-                gsap.fromTo(nextPolaroid, 
-                    { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
-                    { scale: 1.05, boxShadow: "0 0 40px rgba(0, 184, 148, 0.8)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }
-                );
-            }
-        }});
+        if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
     });
 
 });

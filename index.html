@@ -77,6 +77,8 @@
                     <div class="timer-block"><span id="cd-minutes">00</span><small>Minutes</small></div>
                     <div class="timer-block"><span id="cd-seconds">00</span><small>Seconds</small></div>
                 </div>
+                <!-- Developer tool, remove later -->
+                <button id="skip-countdown-btn" class="premium-btn secondary-btn" style="margin-top: 30px;">Skip</button>
             </div>
         </div>
     </div>
@@ -362,19 +364,19 @@
             <canvas id="heart-particles-canvas"></canvas>
             <h2 class="orb-title kutty-title-style">Our Memories</h2>
             <div class="polaroid-container">
-                <div class="polaroid unlocked glass-panel" id="vid-card-1" data-video="videos/Srib1.mp4" data-index="1">
+                <div class="polaroid unlocked glass-panel" id="vid-card-1" data-video="766NQeoukWQ" data-index="1">
                     <img src="pictures/sri2.jpeg" class="polaroid-bg" alt="bg">
                     <div class="polaroid-inner"><div class="lock-icon">🤍</div></div>
                 </div>
-                <div class="polaroid locked glass-panel" id="vid-card-2" data-video="videos/Srib2.mp4" data-index="2">
+                <div class="polaroid locked glass-panel" id="vid-card-2" data-video="1SY6Vp0Wocg" data-index="2">
                     <img src="pictures/sri3.jpeg" class="polaroid-bg" alt="bg">
                     <div class="polaroid-inner"><div class="lock-icon">🐣</div></div>
                 </div>
-                <div class="polaroid locked glass-panel" id="vid-card-3" data-video="videos/Srib3.mp4" data-index="3">
+                <div class="polaroid locked glass-panel" id="vid-card-3" data-video="PoMUafExy0s" data-index="3">
                     <img src="pictures/sri4.jpeg" class="polaroid-bg" alt="bg">
                     <div class="polaroid-inner"><div class="lock-icon">💍</div></div>
                 </div>
-                <div class="polaroid locked glass-panel" id="vid-card-4" data-video="videos/Srib4.mp4" data-index="4">
+                <div class="polaroid locked glass-panel" id="vid-card-4" data-video="pJGc6q2MV60" data-index="4">
                     <img src="pictures/sri5.jpeg" class="polaroid-bg" alt="bg">
                     <div class="polaroid-inner"><div class="lock-icon">👨‍👩‍👧‍👦</div></div>
                 </div>
@@ -389,7 +391,7 @@
     <div id="video-overlay" class="fullscreen-overlay theater-mode" style="display:none; opacity:0; z-index:10000;">
         <button id="close-video" class="glass-btn icon-btn">&times;</button>
         <div class="theater-player-container">
-            <video id="orb-player" playsinline></video>
+            <div id="orb-player"></div>
             <div class="theater-controls glass-panel">
                 <button id="custom-play-btn" class="control-btn">▶</button>
                 <button id="custom-pause-btn" class="control-btn" style="display:none;">⏸</button>
@@ -404,6 +406,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script src="script.js"></script>
 </body>
 </html>
