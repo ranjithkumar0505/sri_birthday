@@ -110,8 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPlayingIndex = 1;
 
   // --- PHASE 0: COUNTDOWN TIMER ---
-    // Target: July 9th 2026 at midnight (ISO 8601 format ensures no NaN crashes)
-    const targetDate = new Date('2026-07-09T00:00:00').getTime();
+    // Target: July 9th 2026 at midnight
+    const targetDate = new Date('July 9, 2026 00:00:00').getTime();
     
     let countdownTimer;
 
