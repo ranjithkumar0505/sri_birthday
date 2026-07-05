@@ -634,46 +634,54 @@ document.addEventListener("DOMContentLoaded", () => {
         polaroid.addEventListener('click', function() {
             if (this.classList.contains('locked')) return; 
 
+            // Premium Haptic Touch
+            if (navigator.vibrate) navigator.vibrate(50);
+
             const videoId = this.getAttribute('data-video');
             currentPlayingIndex = parseInt(this.getAttribute('data-index'));
+
+            // Pause all background music completely
+            if (bgMusic) bgMusic.pause();
+            if (kuttyMusic) kuttyMusic.pause();
 
             // 1. Reset progress UI state immediately
             customPlayBtn.style.display = 'flex';
             customPauseBtn.style.display = 'none';
             videoProgress.style.width = '0%';
 
-            // 2. Open the modal screen visually
+            // 2. INSTANTLY open the modal visually (No GSAP animation to confuse YouTube's layout calculation)
             videoOverlay.style.display = 'flex';
-            gsap.to(videoOverlay, { opacity: 1, duration: 0.5 });
+            videoOverlay.style.opacity = '1';
             
-            // 3. Wait for browser paint to finish completely before cueing video stream
-            requestAnimationFrame(() => {
-                setTimeout(() => {
-                    if (window.ytPlayer && typeof window.ytPlayer.cueVideoById === 'function') {
-                        window.ytPlayer.cueVideoById(videoId);
-                    }
-                }, 100);
-            });
+            // 3. Wait exactly 100ms for browser paint to finish completely before cueing video stream
+            setTimeout(() => {
+                if (window.ytPlayer && typeof window.ytPlayer.cueVideoById === 'function') {
+                    window.ytPlayer.cueVideoById(videoId);
+                }
+            }, 100);
         });
     });
 
     closeVideo.addEventListener('click', () => {
+        if (navigator.vibrate) navigator.vibrate(50);
         if (window.ytPlayer && window.ytPlayer.pauseVideo) window.ytPlayer.pauseVideo();
         clearInterval(progressInterval);
-        gsap.to(videoOverlay, { opacity: 0, duration: 0.5, onComplete: () => {
-            videoOverlay.style.display = 'none';
-            videoProgress.style.width = '0%';
-        }});
+        
+        // Hide instantly to prevent iframe layout glitches
+        videoOverlay.style.display = 'none';
+        videoOverlay.style.opacity = '0';
+        videoProgress.style.width = '0%';
     });
 
     customPlayBtn.addEventListener('click', () => {
+        if (navigator.vibrate) navigator.vibrate(30);
         if (window.ytPlayer && typeof window.ytPlayer.playVideo === 'function') {
-            // Safe execution wrapper
             try { window.ytPlayer.playVideo(); } catch(e) { console.log(e); }
         }
     });
 
     customPauseBtn.addEventListener('click', () => {
+        if (navigator.vibrate) navigator.vibrate(30);
         if (window.ytPlayer && typeof window.ytPlayer.pauseVideo === 'function') {
             try { window.ytPlayer.pauseVideo(); } catch(e) { console.log(e); }
         }
@@ -688,7 +696,7 @@ function onYouTubeIframeAPIReady() {
     window.ytPlayer = new YT.Player('orb-player', {
         height: '100%',
         width: '100%',
-        videoId: 'M7lc1UVf-VE', // Pre-warms the iframe connection cleanly
+        videoId: '766NQeoukWQ', // Reverted to your actual first video
         playerVars: {
             'controls': 0, 
             'disablekb': 1,
