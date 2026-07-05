@@ -1,3 +1,6 @@
+// === ADD THESE TWO LINES TO THE VERY TOP OF YOUR FILE ===
+let currentPlayingIndex = 1;
+let progressInterval;
 document.addEventListener("DOMContentLoaded", () => {
     
     gsap.registerPlugin(ScrollTrigger);
@@ -107,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const customPlayBtn = document.getElementById('custom-play-btn');
     const customPauseBtn = document.getElementById('custom-pause-btn');
     let watchedVideos = 0;
-    let currentPlayingIndex = 1;
+   
 
   // --- PHASE 0: COUNTDOWN TIMER ---
     // Target: July 9th 2026 at midnight
@@ -556,79 +559,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 800);
     }
 
-    const videoProgress = document.getElementById('video-progress');
+   const videoProgress = document.getElementById('video-progress');
 
-    let ytPlayer;
-    let progressInterval;
+    // *** DELETE THE ENTIRE DUPLICATE YOUTUBE SETUP HERE ***
 
-    window.onYouTubeIframeAPIReady = function() {
-        ytPlayer = new YT.Player('orb-player', {
-            height: '100%',
-            width: '100%',
-            playerVars: {
-                'controls': 0,
-                'disablekb': 1,
-                'rel': 0,
-                'modestbranding': 1,
-                'showinfo': 0,
-                'iv_load_policy': 3,
-                'origin': window.location.origin
-            },
-            events: {
-                'onStateChange': onPlayerStateChange
-            }
-        });
-    };
-
-    function startProgressInterval() {
-        clearInterval(progressInterval);
-        progressInterval = setInterval(() => {
-            if (ytPlayer && ytPlayer.getCurrentTime && ytPlayer.getDuration) {
-                const duration = ytPlayer.getDuration();
-                if (duration > 0) {
-                    const percentage = (ytPlayer.getCurrentTime() / duration) * 100;
-                    videoProgress.style.width = percentage + '%';
-                }
-            }
-        }, 100);
-    }
-
-    function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING) {
-            startProgressInterval();
-            customPlayBtn.style.display = 'none';
-            customPauseBtn.style.display = 'flex';
-        } else {
-            clearInterval(progressInterval);
-            if (event.data == YT.PlayerState.PAUSED) {
-                customPauseBtn.style.display = 'none';
-                customPlayBtn.style.display = 'flex';
-            } else if (event.data == YT.PlayerState.ENDED) {
-                gsap.to(videoOverlay, { opacity: 0, duration: 1, delay: 0.5, onComplete: () => {
-                    videoOverlay.style.display = 'none';
-                    videoProgress.style.width = '0%';
-                    
-                    // Sequential Unlock Animation
-                    const currentPolaroid = document.getElementById(`vid-card-${currentPlayingIndex}`);
-                    currentPolaroid.classList.add('watched');
-                    
-                    if (currentPlayingIndex < 4) {
-                        const nextPolaroid = document.getElementById(`vid-card-${currentPlayingIndex + 1}`);
-                        nextPolaroid.classList.remove('locked');
-                        nextPolaroid.classList.add('unlocked');
-                        
-                        // Fancy Unlock Animation
-                        const lockIcon = nextPolaroid.querySelector('.lock-icon');
-                        gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
-                        gsap.fromTo(nextPolaroid, 
-                            { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
-                            { scale: 1.05, boxShadow: "0 0 40px rgba(255, 118, 117, 0.8)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }
-                        );
-                    }
-                }});
-            }
-        }
-    }
     // POLAROID INTERACTION LOGIC
     polaroids.forEach(polaroid => {
         polaroid.addEventListener('click', function() {
