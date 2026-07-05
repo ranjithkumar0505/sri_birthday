@@ -331,39 +331,56 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
 }
 
 @media screen and (max-width: 768px) {
+    /* CRITICAL FIX: Unlock global scrolling on mobile */
+    body, html { overflow-y: auto !important; }
+
     .main-heading { font-size: 3.2rem; }
     .hero-sub-heading { font-size: 0.65rem; letter-spacing: 3px; }
     .hero-image-wrapper { width: 260px; height: 320px; margin-top: 20px; }
     
-    /* MOBILE FIX: 2-Column Grid */
+    /* MOBILE FIX: Pinterest-style Masonry Layout */
     .gallery-container { 
         transform: none; 
         height: auto; 
         margin-top: 30px; 
-        display: grid; 
-        grid-template-columns: repeat(2, 1fr); 
-        gap: 15px; 
+        column-count: 2; 
+        column-gap: 15px; 
         padding: 0 15px; 
+        display: block;
     }
     .collage-img {
         position: relative; 
         width: 100%; 
-        height: 160px; 
-        top: auto !important; 
-        left: auto !important; 
-        right: auto !important; 
-        bottom: auto !important; 
+        height: auto !important; /* Allows natural varied heights */
+        margin-bottom: 15px; /* Spacing between stacked images */
+        top: auto !important; left: auto !important; right: auto !important; bottom: auto !important; 
         transform: none !important; 
+        display: inline-block; /* Prevents images splitting across columns */
     }
-    .img5 { grid-column: span 2; height: 200px; } /* Makes the last image span full width nicely */
+    .img5 { grid-column: auto; } 
     
     .lyrics-text { font-size: 1.8rem; margin-bottom: 20px; padding: 0 15px; }
     .cards-grid { transform: scale(0.4); transform-origin: top center; height: 250px; }
     .flip-cards-section { min-height: 50dvh; padding: 40px 10px; }
     
-    /* MOBILE FIX: Dynamic Viewport Heights (dvh) for smooth scrolling */
+    /* MOBILE FIX: Fix overlapping Kutty Title */
+    .kutty-title {
+        position: relative !important;
+        top: auto !important;
+        margin-bottom: 2vh;
+        padding: 0 10px;
+    }
+
+    /* MOBILE FIX: Center "Happy Birthday Thangoo" */
+    .golden-glow {
+        text-align: center;
+        width: 100%;
+        font-size: 3rem;
+        padding: 0 15px;
+    }
+
     .scroll-telling-container { flex-direction: column; justify-content: flex-start; min-height: 100dvh; height: auto;}
-    .st-images { width: 100vw; height: 45dvh; order: 1; padding: 0; padding-top: 5dvh;}
+    .st-images { width: 100vw; height: 45dvh; order: 1; padding: 0; padding-top: 2dvh;}
     .st-lyrics { width: 100vw; height: 45dvh; order: 2; padding: 0; display: flex; align-items: center; justify-content: center; }
     
     .st-lyric { font-size: 1.5rem; text-align: center; width: 90%; }
@@ -375,7 +392,6 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
     .hint-box { width: 80px; height: 80px; }
     .hint-front, .hint-back { font-size: 0.8rem; }
     
-    /* Mobile Phase 0: Stacked Countdown */
     .countdown-container { flex-direction: column; gap: 20px; text-align: center; margin-top: 20px;}
     .birthday-girl-wrapper { max-width: 200px; border-width: 4px; }
     .birthday-cap { font-size: 3.5rem; top: -30px; }
@@ -385,8 +401,7 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
     .timer-block { width: 60px; height: 70px; }
     .timer-block span { font-size: 1.8rem; }
     .timer-block small { font-size: 0.65rem; }
-}
-iframe#orb-player {
+}iframe#orb-player {
     pointer-events: auto !important;
     position: relative;
     z-index: 2;

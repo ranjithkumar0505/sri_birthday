@@ -712,6 +712,17 @@ function onPlayerStateChange(event) {
                     
                     const lockIcon = nextPolaroid.querySelector('.lock-icon');
                     gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
+
+                    // UPGRADE: Mini Confetti Burst on Unlock!
+                    if (typeof confetti === 'function') {
+                        confetti({
+                            particleCount: 80,
+                            spread: 60,
+                            origin: { y: 0.6 },
+                            colors: ['#00b894', '#FF1493', '#FFD1DC'],
+                            zIndex: 9999
+                        });
+                    }
                 }
             }
         }});
