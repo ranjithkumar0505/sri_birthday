@@ -597,19 +597,45 @@ document.addEventListener("DOMContentLoaded", () => {
                 videoOverlay.style.opacity = '1';
             }
             
-            // 3. DESKTOP FIX: Force load instead of cue
+            // 3. DESKTOP FIX: Revert to cueVideoById with a 300ms delay to prevent race condition
             setTimeout(() => {
-                if (window.ytPlayer && typeof window.ytPlayer.loadVideoById === 'function') {
-                    window.ytPlayer.loadVideoById(videoId);
-                    // Pause automatically right after loading so custom play button works seamlessly
-                    setTimeout(() => { window.ytPlayer.pauseVideo(); }, 150);
+                if (window.ytPlayer && typeof window.ytPlayer.cueVideoById === 'function') {
+                    window.ytPlayer.cueVideoById(videoId);
                 }
-            }, 100);
+            }, 300);
         });
     });
 
     closeVideo.addEventListener('click', () => {
         if (navigator.vibrate) navigator.vibrate(50);
+        
+        // FAIL-SAFE LOGIC: If she watched > 90% and clicks close, still unlock the next video!
+        if (window.ytPlayer && window.ytPlayer.getCurrentTime && window.ytPlayer.getDuration) {
+            const duration = window.ytPlayer.getDuration();
+            if (duration > 0 && (window.ytPlayer.getCurrentTime() / duration) > 0.90) {
+                const currentPolaroid = document.getElementById(`vid-card-${window.currentPlayingIndex}`);
+                if(currentPolaroid) {
+                    currentPolaroid.classList.add('watched');
+                    currentPolaroid.classList.remove('ready-to-play');
+                }
+                
+                if (window.currentPlayingIndex < 4) {
+                    const nextPolaroid = document.getElementById(`vid-card-${window.currentPlayingIndex + 1}`);
+                    if (nextPolaroid && nextPolaroid.classList.contains('locked')) {
+                        nextPolaroid.classList.remove('locked');
+                        nextPolaroid.classList.add('unlocked', 'ready-to-play');
+                        
+                        const lockIcon = nextPolaroid.querySelector('.lock-icon');
+                        gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
+                        
+                        if (typeof confetti === 'function') {
+                            confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#00b894', '#FF1493', '#FFD1DC'], zIndex: 9999 });
+                        }
+                    }
+                }
+            }
+        }
+
         if (window.ytPlayer && window.ytPlayer.pauseVideo) window.ytPlayer.pauseVideo();
         clearInterval(progressInterval);
         
@@ -690,8 +716,9 @@ function onPlayerStateChange(event) {
         document.getElementById('custom-pause-btn').style.display = 'none';
         document.getElementById('custom-play-btn').style.display = 'flex';
         
+        // CINEMATIC UPGRADE: Smooth 1.5s fade out when video finishes
         const videoOverlay = document.getElementById('video-overlay');
-        gsap.to(videoOverlay, { opacity: 0, duration: 1, delay: 0.5, onComplete: () => {
+        gsap.to(videoOverlay, { opacity: 0, duration: 1.5, delay: 0.2, ease: "power2.inOut", onComplete: () => {
             videoOverlay.style.display = 'none';
             document.getElementById('video-progress').style.width = '0%';
             

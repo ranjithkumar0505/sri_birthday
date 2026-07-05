@@ -401,6 +401,34 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
     .timer-block { width: 60px; height: 70px; }
     .timer-block span { font-size: 1.8rem; }
     .timer-block small { font-size: 0.65rem; }
+
+    /* MOBILE FIX: Special Thanks Spacing */
+    .flip-cards-section .kutty-title-style {
+        margin-bottom: 40px !important;
+    }
+
+    /* MOBILE FIX: 2x2 Polaroid Grid & Scaled Icons */
+    #orbs-scene { padding-top: 30px; }
+    .polaroid-container {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+        padding: 0 15px !important;
+        width: 100%;
+        perspective: none; /* Flatten for mobile grid */
+    }
+    .polaroid {
+        width: 100% !important;
+        height: 200px !important;
+        padding: 8px !important;
+        padding-bottom: 45px !important;
+        transform: translateY(30px);
+    }
+    .polaroid.unlocked:hover {
+        transform: scale(1.03) translateY(-5px) !important;
+    }
+    .lock-icon { font-size: 1.4rem !important; }
+}
 }iframe#orb-player {
     pointer-events: auto !important;
     position: relative;
