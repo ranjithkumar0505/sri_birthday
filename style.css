@@ -301,7 +301,12 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
 
 /* THEATER MODE VIDEO PLAYER */
 .theater-mode { background: rgba(255, 230, 240, 0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); display: flex; justify-content: center; align-items: center; }
-.theater-player-container { position: relative; width: 95vw; max-width: 550px; height: 85vh; border-radius: 20px; overflow: hidden; box-shadow: 0 0 50px rgba(255, 107, 107, 0.6); background: #000; display: flex; flex-direction: column; margin: 0 auto; }
+.theater-player-container { position: relative; width: 95vw; max-width: 550px; height: 85vh; border-radius: 20px; overflow: hidden; box-shadow: 0 0 50px rgba(255, 107, 107, 0.6); background: #000; display: flex; flex-direction: column; margin: 0 auto; animation: premiumGlow 4s infinite alternate; }
+
+@keyframes premiumGlow {
+    0% { box-shadow: 0 0 30px rgba(255, 107, 107, 0.4), 0 0 10px rgba(255, 255, 255, 0.2); }
+    100% { box-shadow: 0 0 60px rgba(255, 20, 147, 0.8), 0 0 20px rgba(255, 255, 255, 0.4); }
+}
 #orb-player, iframe#orb-player { width: 100%; height: 100%; flex-grow: 1; min-height: 0; border: none; display: block; }
 
 .theater-controls { display: flex; align-items: center; justify-content: center; gap: 20px; padding: 20px; background: rgba(255, 255, 255, 0.15); border-top: 1px solid rgba(255,255,255,0.2); width: 100%; box-sizing: border-box; }
@@ -314,19 +319,52 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
 #close-video { position: absolute; top: 15px; right: 15px; font-size: 2.5rem; width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; cursor: pointer; transition: all 0.3s; z-index: 20000; display: flex; justify-content: center; align-items: center; line-height: 0; padding-bottom: 5px;}
 #close-video:hover { background: rgba(255, 107, 129, 0.8); transform: rotate(90deg); box-shadow: 0 0 20px rgba(255, 107, 129, 0.6); }
 
+/* UPGRADE: Pulsing Glow for newly unlocked videos */
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(0, 184, 148, 0.4); transform: scale(1); }
+    50% { box-shadow: 0 0 30px rgba(0, 184, 148, 0.9); transform: scale(1.05); }
+    100% { box-shadow: 0 0 10px rgba(0, 184, 148, 0.4); transform: scale(1); }
+}
+.ready-to-play {
+    animation: pulseGlow 2s infinite !important;
+    border: 2px solid #00b894 !important;
+}
+
 @media screen and (max-width: 768px) {
     .main-heading { font-size: 3.2rem; }
     .hero-sub-heading { font-size: 0.65rem; letter-spacing: 3px; }
     .hero-image-wrapper { width: 260px; height: 320px; margin-top: 20px; }
-    .gallery-container { transform: scale(0.45); transform-origin: top center; height: 280px; margin-top: 10px; }
+    
+    /* MOBILE FIX: 2-Column Grid */
+    .gallery-container { 
+        transform: none; 
+        height: auto; 
+        margin-top: 30px; 
+        display: grid; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 15px; 
+        padding: 0 15px; 
+    }
+    .collage-img {
+        position: relative; 
+        width: 100%; 
+        height: 160px; 
+        top: auto !important; 
+        left: auto !important; 
+        right: auto !important; 
+        bottom: auto !important; 
+        transform: none !important; 
+    }
+    .img5 { grid-column: span 2; height: 200px; } /* Makes the last image span full width nicely */
+    
     .lyrics-text { font-size: 1.8rem; margin-bottom: 20px; padding: 0 15px; }
     .cards-grid { transform: scale(0.4); transform-origin: top center; height: 250px; }
-    .flip-cards-section { min-height: 50vh; padding: 40px 10px; }
+    .flip-cards-section { min-height: 50dvh; padding: 40px 10px; }
     
-    /* Mobile Phase 4: Stacked Layout */
-    .scroll-telling-container { flex-direction: column; justify-content: center; height: 100vh;}
-    .st-images { width: 100vw; height: 50vh; order: 1; padding: 0; padding-top: 10vh;}
-    .st-lyrics { width: 100vw; height: 50vh; order: 2; padding: 0; display: flex; align-items: center; justify-content: center; }
+    /* MOBILE FIX: Dynamic Viewport Heights (dvh) for smooth scrolling */
+    .scroll-telling-container { flex-direction: column; justify-content: flex-start; min-height: 100dvh; height: auto;}
+    .st-images { width: 100vw; height: 45dvh; order: 1; padding: 0; padding-top: 5dvh;}
+    .st-lyrics { width: 100vw; height: 45dvh; order: 2; padding: 0; display: flex; align-items: center; justify-content: center; }
     
     .st-lyric { font-size: 1.5rem; text-align: center; width: 90%; }
     .st-img-wrapper { width: 85%; height: 35vh; max-width: none; }

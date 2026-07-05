@@ -563,7 +563,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // *** DELETE THE ENTIRE DUPLICATE YOUTUBE SETUP HERE ***
 
-    // POLAROID INTERACTION LOGIC
+   // POLAROID INTERACTION LOGIC
     polaroids.forEach(polaroid => {
         polaroid.addEventListener('click', function() {
             if (this.classList.contains('locked')) return; 
@@ -572,25 +572,37 @@ document.addEventListener("DOMContentLoaded", () => {
             if (navigator.vibrate) navigator.vibrate(50);
 
             const videoId = this.getAttribute('data-video');
-            currentPlayingIndex = parseInt(this.getAttribute('data-index'));
+            window.currentPlayingIndex = parseInt(this.getAttribute('data-index'));
+
+            // Remove visual upgrade glow once clicked
+            this.classList.remove('ready-to-play');
 
             // Pause all background music completely
             if (bgMusic) bgMusic.pause();
             if (kuttyMusic) kuttyMusic.pause();
 
             // 1. Reset progress UI state immediately
-            customPlayBtn.style.display = 'flex';
-            customPauseBtn.style.display = 'none';
-            videoProgress.style.width = '0%';
-
-            // 2. INSTANTLY open the modal visually (No GSAP animation to confuse YouTube's layout calculation)
-            videoOverlay.style.display = 'flex';
-            videoOverlay.style.opacity = '1';
+            const customPlayBtn = document.getElementById('custom-play-btn');
+            const customPauseBtn = document.getElementById('custom-pause-btn');
+            const videoProgress = document.getElementById('video-progress');
             
-            // 3. Wait exactly 100ms for browser paint to finish completely before cueing video stream
+            if(customPlayBtn) customPlayBtn.style.display = 'flex';
+            if(customPauseBtn) customPauseBtn.style.display = 'none';
+            if(videoProgress) videoProgress.style.width = '0%';
+
+            // 2. INSTANTLY open the modal visually
+            const videoOverlay = document.getElementById('video-overlay');
+            if(videoOverlay) {
+                videoOverlay.style.display = 'flex';
+                videoOverlay.style.opacity = '1';
+            }
+            
+            // 3. DESKTOP FIX: Force load instead of cue
             setTimeout(() => {
-                if (window.ytPlayer && typeof window.ytPlayer.cueVideoById === 'function') {
-                    window.ytPlayer.cueVideoById(videoId);
+                if (window.ytPlayer && typeof window.ytPlayer.loadVideoById === 'function') {
+                    window.ytPlayer.loadVideoById(videoId);
+                    // Pause automatically right after loading so custom play button works seamlessly
+                    setTimeout(() => { window.ytPlayer.pauseVideo(); }, 150);
                 }
             }, 100);
         });
@@ -683,21 +695,23 @@ function onPlayerStateChange(event) {
             videoOverlay.style.display = 'none';
             document.getElementById('video-progress').style.width = '0%';
             
-            const currentPolaroid = document.getElementById(`vid-card-${currentPlayingIndex}`);
-            if(currentPolaroid) currentPolaroid.classList.add('watched');
+            // STRICT SEQUENTIAL LOGIC & VISUAL UPGRADE
+            const currentPolaroid = document.getElementById(`vid-card-${window.currentPlayingIndex}`);
+            if(currentPolaroid) {
+                currentPolaroid.classList.add('watched');
+                currentPolaroid.classList.remove('ready-to-play'); // Turn off glow
+            }
             
-            if (currentPlayingIndex < 4) {
-                const nextPolaroid = document.getElementById(`vid-card-${currentPlayingIndex + 1}`);
-                if (nextPolaroid) {
+            if (window.currentPlayingIndex < 4) {
+                const nextPolaroid = document.getElementById(`vid-card-${window.currentPlayingIndex + 1}`);
+                // Only unlock if it is currently locked (prevents skipping)
+                if (nextPolaroid && nextPolaroid.classList.contains('locked')) {
                     nextPolaroid.classList.remove('locked');
                     nextPolaroid.classList.add('unlocked');
+                    nextPolaroid.classList.add('ready-to-play'); // Turn on pulsing glow
                     
                     const lockIcon = nextPolaroid.querySelector('.lock-icon');
                     gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
-                    gsap.fromTo(nextPolaroid, 
-                        { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
-                        { scale: 1.05, boxShadow: "0 0 40px rgba(0, 184, 148, 0.8)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }
-                    );
                 }
             }
         }});
