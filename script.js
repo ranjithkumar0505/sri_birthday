@@ -637,14 +637,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const videoId = this.getAttribute('data-video');
             currentPlayingIndex = parseInt(this.getAttribute('data-index'));
 
-            // 1. MAKE CONTAINER VISIBLE FIRST (Fixes the Hidden IFrame Trap)
+           // 1. MAKE CONTAINER VISIBLE FIRST
             videoOverlay.style.display = 'flex';
             gsap.to(videoOverlay, { opacity: 1, duration: 0.5 });
             
-            // 2. SAFELY LOAD THE VIDEO (Use cueVideo so it starts paused without crashing)
-            if (window.ytPlayer && window.ytPlayer.cueVideoById) {
-                window.ytPlayer.cueVideoById(videoId);
+            // 2. SAFELY DESTROY AND RE-INITIALIZE LOGIC FOR THE NEW ID
+            if (window.ytPlayer && typeof window.ytPlayer.destroy === 'function') {
+                window.ytPlayer.destroy();
             }
+            setTimeout(() => {
+                createNewPlayer(videoId);
+            }, 150);
             
             customPlayBtn.style.display = 'flex';
             customPauseBtn.style.display = 'none';
@@ -675,16 +678,22 @@ document.addEventListener("DOMContentLoaded", () => {
 window.ytPlayer = null;
 
 function onYouTubeIframeAPIReady() {
+    // Initializes default container cleanly on first page boot
+    createNewPlayer('766NQeoukWQ');
+}
+
+function createNewPlayer(vId) {
     window.ytPlayer = new YT.Player('orb-player', {
         height: '100%',
         width: '100%',
-        videoId: '766NQeoukWQ', // Default ID prevents empty-load crashes
+        videoId: vId,
         playerVars: {
             'controls': 0, 
             'disablekb': 1,
             'rel': 0,
             'modestbranding': 1,
             'playsinline': 1,
+            'autoplay': 0,
             'origin': window.location.origin
         },
         events: {
