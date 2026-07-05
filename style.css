@@ -319,15 +319,22 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
 #close-video { position: absolute; top: 15px; right: 15px; font-size: 2.5rem; width: 60px; height: 60px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; cursor: pointer; transition: all 0.3s; z-index: 20000; display: flex; justify-content: center; align-items: center; line-height: 0; padding-bottom: 5px;}
 #close-video:hover { background: rgba(255, 107, 129, 0.8); transform: rotate(90deg); box-shadow: 0 0 20px rgba(255, 107, 129, 0.6); }
 
-/* UPGRADE: Pulsing Glow for newly unlocked videos */
+/* UPGRADE: Romantic Pulsing Glow for newly unlocked videos */
 @keyframes pulseGlow {
-    0% { box-shadow: 0 0 10px rgba(0, 184, 148, 0.4); transform: scale(1); }
-    50% { box-shadow: 0 0 30px rgba(0, 184, 148, 0.9); transform: scale(1.05); }
-    100% { box-shadow: 0 0 10px rgba(0, 184, 148, 0.4); transform: scale(1); }
+    0% { box-shadow: 0 0 15px rgba(255, 107, 107, 0.4); transform: scale(1); }
+    50% { box-shadow: 0 0 40px rgba(255, 20, 147, 0.8); transform: scale(1.05); }
+    100% { box-shadow: 0 0 15px rgba(255, 107, 107, 0.4); transform: scale(1); }
+}
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
 }
 .ready-to-play {
     animation: pulseGlow 2s infinite !important;
-    border: 2px solid #00b894 !important;
+    border: 2px solid #FF6B6B !important;
+}
+.ready-to-play .lock-icon {
+    animation: heartbeat 1.5s infinite ease-in-out !important;
 }
 
 @media screen and (max-width: 768px) {

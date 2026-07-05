@@ -740,15 +740,34 @@ function onPlayerStateChange(event) {
                     const lockIcon = nextPolaroid.querySelector('.lock-icon');
                     gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
 
-                    // UPGRADE: Mini Confetti Burst on Unlock!
+                     // UPGRADE: Romantic Crossfire Shower!
                     if (typeof confetti === 'function') {
-                        confetti({
-                            particleCount: 80,
-                            spread: 60,
-                            origin: { y: 0.6 },
-                            colors: ['#00b894', '#FF1493', '#FFD1DC'],
-                            zIndex: 9999
-                        });
+                        const duration = 2000;
+                        const end = Date.now() + duration;
+                        const romanticColors = ['#FF1493', '#FF6B6B', '#ff9a9e', '#fecfef'];
+
+                        (function frame() {
+                            confetti({
+                                particleCount: 5,
+                                angle: 60,
+                                spread: 55,
+                                origin: { x: 0, y: 0.8 },
+                                colors: romanticColors,
+                                zIndex: 9999
+                            });
+                            confetti({
+                                particleCount: 5,
+                                angle: 120,
+                                spread: 55,
+                                origin: { x: 1, y: 0.8 },
+                                colors: romanticColors,
+                                zIndex: 9999
+                            });
+
+                            if (Date.now() < end) {
+                                requestAnimationFrame(frame);
+                            }
+                        }());
                     }
                 }
             }
