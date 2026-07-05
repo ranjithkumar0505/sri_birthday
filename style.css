@@ -348,3 +348,12 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
     .timer-block span { font-size: 1.8rem; }
     .timer-block small { font-size: 0.65rem; }
 }
+iframe#orb-player {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 2;
+}
+.theater-controls {
+    position: relative;
+    z-index: 10;
+}

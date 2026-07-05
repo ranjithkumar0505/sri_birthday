@@ -665,11 +665,16 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     customPlayBtn.addEventListener('click', () => {
-        if (window.ytPlayer && window.ytPlayer.playVideo) window.ytPlayer.playVideo();
+        if (window.ytPlayer && typeof window.ytPlayer.playVideo === 'function') {
+            // Safe execution wrapper
+            try { window.ytPlayer.playVideo(); } catch(e) { console.log(e); }
+        }
     });
 
     customPauseBtn.addEventListener('click', () => {
-        if (window.ytPlayer && window.ytPlayer.pauseVideo) window.ytPlayer.pauseVideo();
+        if (window.ytPlayer && typeof window.ytPlayer.pauseVideo === 'function') {
+            try { window.ytPlayer.pauseVideo(); } catch(e) { console.log(e); }
+        }
     });
 
 }); // <-- THIS BRACE CLOSES YOUR DOMContentLoaded EVENT
