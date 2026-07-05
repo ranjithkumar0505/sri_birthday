@@ -636,14 +636,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const videoId = this.getAttribute('data-video');
             currentPlayingIndex = parseInt(this.getAttribute('data-index'));
 
-            // Load the video into the YouTube player
-            if (window.ytPlayer && window.ytPlayer.loadVideoById) {
-                window.ytPlayer.loadVideoById(videoId);
-                window.ytPlayer.pauseVideo();
-            }
-
+            // 1. MAKE CONTAINER VISIBLE FIRST (Fixes the Hidden IFrame Trap)
             videoOverlay.style.display = 'flex';
             gsap.to(videoOverlay, { opacity: 1, duration: 0.5 });
+            
+            // 2. SAFELY LOAD THE VIDEO (Use cueVideo so it starts paused without crashing)
+            if (window.ytPlayer && window.ytPlayer.cueVideoById) {
+                window.ytPlayer.cueVideoById(videoId);
+            }
             
             customPlayBtn.style.display = 'flex';
             customPauseBtn.style.display = 'none';
@@ -677,10 +677,11 @@ function onYouTubeIframeAPIReady() {
     window.ytPlayer = new YT.Player('orb-player', {
         height: '100%',
         width: '100%',
+        videoId: '766NQeoukWQ', // Default ID prevents empty-load crashes
         playerVars: {
-            'controls': 0, // Hides default YouTube controls so your custom ones show
+            'controls': 0, 
+            'disablekb': 1,
             'rel': 0,
-            'showinfo': 0,
             'modestbranding': 1,
             'playsinline': 1,
             'origin': window.location.origin
@@ -692,7 +693,6 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerStateChange(event) {
-    // When video plays: hide play button, show pause button, start progress bar
     if (event.data == YT.PlayerState.PLAYING) {
         document.getElementById('custom-play-btn').style.display = 'none';
         document.getElementById('custom-pause-btn').style.display = 'flex';
@@ -704,13 +704,11 @@ function onPlayerStateChange(event) {
             }
         }, 100);
     } 
-    // When video pauses: show play button, hide pause button
     else if (event.data == YT.PlayerState.PAUSED) {
         document.getElementById('custom-pause-btn').style.display = 'none';
         document.getElementById('custom-play-btn').style.display = 'flex';
         clearInterval(progressInterval);
     }
-    // When video ends: trigger the next polaroid unlock animation
     else if (event.data == YT.PlayerState.ENDED) {
         clearInterval(progressInterval);
         document.getElementById('custom-pause-btn').style.display = 'none';
@@ -741,4 +739,3 @@ function onPlayerStateChange(event) {
         }});
     }
 }
-});
