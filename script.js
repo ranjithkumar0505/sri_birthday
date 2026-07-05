@@ -68,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Countdown Elements
     const countdownScreen = document.getElementById('countdown-screen');
-    const skipCdBtn = document.getElementById('skip-countdown-btn');
     const cdDays = document.getElementById('cd-days');
     const cdHours = document.getElementById('cd-hours');
     const cdMinutes = document.getElementById('cd-minutes');
@@ -178,14 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
           
           // 5. Softly fade out bloom overlay
           .to(bloomOverlay, { opacity: 0, duration: 2, ease: "power2.out", onComplete: () => bloomOverlay.remove() }, "-=2.5");
-    }
-
-    if (skipCdBtn) {
-        skipCdBtn.addEventListener('click', function() {
-            this.style.pointerEvents = 'none'; // Prevent double-clicking glitch
-            clearInterval(countdownTimer);
-            transitionToCakeRoom();
-        });
     }
 
   // --- PHASE 1: CINEMATIC CAKE BLOW OUT & SPLIT ---
