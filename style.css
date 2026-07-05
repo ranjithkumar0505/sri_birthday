@@ -336,7 +336,6 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
 .ready-to-play .lock-icon {
     animation: heartbeat 1.5s infinite ease-in-out !important;
 }
-
 @media screen and (max-width: 768px) {
     /* CRITICAL FIX: Unlock global scrolling on mobile */
     body, html { overflow-y: auto !important; }
@@ -436,7 +435,8 @@ h1, h2, h3, .kutty-title-style, .riddle-question, .lyrics-text, .st-lyric {
     }
     .lock-icon { font-size: 1.4rem !important; }
 }
-}iframe#orb-player {
+
+iframe#orb-player {
     pointer-events: auto !important;
     position: relative;
     z-index: 2;

@@ -143,10 +143,23 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCountdown();
 
     function transitionToCakeRoom() {
-        gsap.to(countdownScreen, { opacity: 0, duration: 1, onComplete: () => {
+        // PREMIUM CINEMATIC ENTRY ANIMATION
+        const flash = document.createElement('div');
+        flash.style.position = 'fixed';
+        flash.style.top = '0'; flash.style.left = '0';
+        flash.style.width = '100vw'; flash.style.height = '100vh';
+        flash.style.backgroundColor = '#fff';
+        flash.style.zIndex = '99999';
+        flash.style.opacity = '0';
+        flash.style.pointerEvents = 'none';
+        document.body.appendChild(flash);
+
+        gsap.to(countdownScreen, { scale: 1.1, filter: 'blur(10px)', duration: 1.5, ease: "power2.in" });
+        gsap.to(flash, { opacity: 1, duration: 1, delay: 0.5, onComplete: () => {
             countdownScreen.style.display = 'none';
             cakeRoom.style.display = 'flex';
-            gsap.fromTo(cakeRoom, { opacity: 0 }, { opacity: 1, duration: 1 });
+            gsap.fromTo(cakeRoom, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" });
+            gsap.to(flash, { opacity: 0, duration: 1.5, onComplete: () => flash.remove() });
         }});
     }
 
@@ -597,10 +610,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 videoOverlay.style.opacity = '1';
             }
             
-            // 3. DESKTOP FIX: Revert to cueVideoById with a 300ms delay to prevent race condition
+            // 3. BLACK SCREEN FIX: Use loadVideoById to auto-play!
+            // cueVideoById leaves a black box if the thumbnail fails to load.
             setTimeout(() => {
-                if (window.ytPlayer && typeof window.ytPlayer.cueVideoById === 'function') {
-                    window.ytPlayer.cueVideoById(videoId);
+                if (window.ytPlayer && typeof window.ytPlayer.loadVideoById === 'function') {
+                    window.ytPlayer.loadVideoById(videoId);
                 }
             }, 300);
         });
@@ -609,11 +623,12 @@ document.addEventListener("DOMContentLoaded", () => {
     closeVideo.addEventListener('click', () => {
         if (navigator.vibrate) navigator.vibrate(50);
         
-        // FAIL-SAFE LOGIC: If she watched > 90% and clicks close, still unlock the next video!
+        // FAIL-SAFE LOGIC: DOM-based state verification for > 90% watch time
         if (window.ytPlayer && window.ytPlayer.getCurrentTime && window.ytPlayer.getDuration) {
             const duration = window.ytPlayer.getDuration();
             if (duration > 0 && (window.ytPlayer.getCurrentTime() / duration) > 0.90) {
                 const currentPolaroid = document.getElementById(`vid-card-${window.currentPlayingIndex}`);
+                
                 if(currentPolaroid) {
                     currentPolaroid.classList.add('watched');
                     currentPolaroid.classList.remove('ready-to-play');
@@ -621,6 +636,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 if (window.currentPlayingIndex < 4) {
                     const nextPolaroid = document.getElementById(`vid-card-${window.currentPlayingIndex + 1}`);
+                    
+                    // DOM-based state lock check
                     if (nextPolaroid && nextPolaroid.classList.contains('locked')) {
                         nextPolaroid.classList.remove('locked');
                         nextPolaroid.classList.add('unlocked', 'ready-to-play');
@@ -628,8 +645,34 @@ document.addEventListener("DOMContentLoaded", () => {
                         const lockIcon = nextPolaroid.querySelector('.lock-icon');
                         gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
                         
+                        // UPGRADE: Romantic Crossfire Shower (Matching the ENDED event polish)
                         if (typeof confetti === 'function') {
-                            confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ['#00b894', '#FF1493', '#FFD1DC'], zIndex: 9999 });
+                            const duration = 2000;
+                            const end = Date.now() + duration;
+                            const romanticColors = ['#FF1493', '#FF6B6B', '#ff9a9e', '#fecfef'];
+
+                            (function frame() {
+                                confetti({
+                                    particleCount: 5,
+                                    angle: 60,
+                                    spread: 55,
+                                    origin: { x: 0, y: 0.8 },
+                                    colors: romanticColors,
+                                    zIndex: 9999
+                                });
+                                confetti({
+                                    particleCount: 5,
+                                    angle: 120,
+                                    spread: 55,
+                                    origin: { x: 1, y: 0.8 },
+                                    colors: romanticColors,
+                                    zIndex: 9999
+                                });
+
+                                if (Date.now() < end) {
+                                    requestAnimationFrame(frame);
+                                }
+                            }());
                         }
                     }
                 }
@@ -639,10 +682,17 @@ document.addEventListener("DOMContentLoaded", () => {
         if (window.ytPlayer && window.ytPlayer.pauseVideo) window.ytPlayer.pauseVideo();
         clearInterval(progressInterval);
         
-        // Hide instantly to prevent iframe layout glitches
-        videoOverlay.style.display = 'none';
-        videoOverlay.style.opacity = '0';
-        videoProgress.style.width = '0%';
+        // Hide instantly to prevent iframe layout glitches (Added null checks for safety)
+        const videoOverlay = document.getElementById('video-overlay');
+        const videoProgress = document.getElementById('video-progress');
+        
+        if (videoOverlay) {
+            videoOverlay.style.display = 'none';
+            videoOverlay.style.opacity = '0';
+        }
+        if (videoProgress) {
+            videoProgress.style.width = '0%';
+        }
     });
 
     customPlayBtn.addEventListener('click', () => {
