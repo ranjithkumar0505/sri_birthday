@@ -571,7 +571,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 'rel': 0,
                 'modestbranding': 1,
                 'showinfo': 0,
-                'iv_load_policy': 3
+                'iv_load_policy': 3,
+                'origin': window.location.origin
             },
             events: {
                 'onStateChange': onPlayerStateChange
@@ -732,7 +733,7 @@ function onPlayerStateChange(event) {
                     gsap.to(lockIcon, { opacity: 0, scale: 0, duration: 0.5, ease: "back.in(1.5)" });
                     gsap.fromTo(nextPolaroid, 
                         { scale: 1, boxShadow: "0 0 0 rgba(0,0,0,0)" }, 
-                        { scale: 1.05, boxShadow: "0 0 40px rgba(0, 184, 148, 0.8)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }
+                        { scale: 1.05, boxShadow: "0 0 40px rgba(255, 118, 117, 0.8)", duration: 0.5, yoyo: true, repeat: 1, ease: "power2.out" }
                     );
                 }
             }
