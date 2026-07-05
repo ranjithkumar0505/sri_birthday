@@ -623,27 +623,38 @@ document.addEventListener("DOMContentLoaded", () => {
 
 }); // <-- THIS BRACE CLOSES YOUR DOMContentLoaded EVENT
 
-// === YOUTUBE API SETUP (MUST BE OUTSIDE THE MAIN WRAPPER) ===
-window.ytPlayer = null;
-
+// === YOUTUBE API SETUP (Must be in global scope) ===
 function onYouTubeIframeAPIReady() {
     window.ytPlayer = new YT.Player('orb-player', {
         height: '100%',
         width: '100%',
-        videoId: '766NQeoukWQ', // Reverted to your actual first video
+        videoId: '766NQeoukWQ', // Default first video
         playerVars: {
             'controls': 0, 
             'disablekb': 1,
             'rel': 0,
             'modestbranding': 1,
             'playsinline': 1,
-            'origin': window.location.origin
+            'origin': 'https://ranjithkumar0505.github.io' // HARDCODED exact GitHub URL
         },
         events: {
-            'onStateChange': onPlayerStateChange
+            'onStateChange': onPlayerStateChange,
+            'onError': onPlayerError // ADDED THIS TO CATCH EXACT ERRORS
         }
     });
 }
+
+// === NEW ERROR CATCHER FUNCTION ===
+function onPlayerError(event) {
+    console.error("YouTube Player Error Code:", event.data);
+    if (event.data === 101 || event.data === 150) {
+        alert("YouTube Blocked This: The owner of this video has disabled embedding (likely copyright).");
+    } else if (event.data === 100) {
+        alert("YouTube Blocked This: This video is set to Private or has been deleted.");
+    }
+}
+
+// (Leave your existing onPlayerStateChange function right below this exactly as it is)
 
 function onPlayerStateChange(event) {
     if (event.data == YT.PlayerState.PLAYING) {
