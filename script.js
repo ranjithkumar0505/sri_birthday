@@ -143,28 +143,46 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCountdown();
 
     function transitionToCakeRoom() {
-        // PREMIUM CINEMATIC ENTRY ANIMATION
-        const flash = document.createElement('div');
-        flash.style.position = 'fixed';
-        flash.style.top = '0'; flash.style.left = '0';
-        flash.style.width = '100vw'; flash.style.height = '100vh';
-        flash.style.backgroundColor = '#fff';
-        flash.style.zIndex = '99999';
-        flash.style.opacity = '0';
-        flash.style.pointerEvents = 'none';
-        document.body.appendChild(flash);
+        // PREMIUM CINEMATIC BLOOM ENTRY ANIMATION
+        const bloomOverlay = document.createElement('div');
+        bloomOverlay.style.position = 'fixed';
+        bloomOverlay.style.top = '0'; bloomOverlay.style.left = '0';
+        bloomOverlay.style.width = '100vw'; bloomOverlay.style.height = '100vh';
+        // Cinematic rose-gold/pink bloom glow
+        bloomOverlay.style.background = 'radial-gradient(circle at center, rgba(255,255,255,1) 0%, rgba(255,182,193,0.9) 40%, rgba(255,105,180,0) 100%)'; 
+        bloomOverlay.style.zIndex = '99999';
+        bloomOverlay.style.opacity = '0';
+        bloomOverlay.style.mixBlendMode = 'screen';
+        bloomOverlay.style.pointerEvents = 'none';
+        document.body.appendChild(bloomOverlay);
 
-        gsap.to(countdownScreen, { scale: 1.1, filter: 'blur(10px)', duration: 1.5, ease: "power2.in" });
-        gsap.to(flash, { opacity: 1, duration: 1, delay: 0.5, onComplete: () => {
-            countdownScreen.style.display = 'none';
-            cakeRoom.style.display = 'flex';
-            gsap.fromTo(cakeRoom, { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 1.5, ease: "power3.out" });
-            gsap.to(flash, { opacity: 0, duration: 1.5, onComplete: () => flash.remove() });
-        }});
+        const tl = gsap.timeline();
+        
+        // 1. Heartbeat Pulse & Zoom In (Countdown Screen Blurs)
+        tl.to(countdownScreen, { scale: 1.15, filter: 'blur(20px)', opacity: 0.5, duration: 2, ease: "power2.inOut" }, 0)
+          
+          // 2. The Cinematic Bloom Peak
+          .to(bloomOverlay, { opacity: 1, duration: 1.5, ease: "power2.in" }, "-=1.5")
+          
+          // 3. Scene Swap behind the blinding bloom
+          .call(() => {
+              countdownScreen.style.display = 'none';
+              cakeRoom.style.display = 'flex';
+          })
+          
+          // 4. Cake Room emerges from the bloom (Focus pull: blur-to-sharp & zoom out)
+          .fromTo(cakeRoom, 
+              { scale: 1.1, filter: 'blur(15px)', opacity: 0 }, 
+              { scale: 1, filter: 'blur(0px)', opacity: 1, duration: 2.5, ease: "power3.out" }
+          )
+          
+          // 5. Softly fade out bloom overlay
+          .to(bloomOverlay, { opacity: 0, duration: 2, ease: "power2.out", onComplete: () => bloomOverlay.remove() }, "-=2.5");
     }
 
     if (skipCdBtn) {
-        skipCdBtn.addEventListener('click', () => {
+        skipCdBtn.addEventListener('click', function() {
+            this.style.pointerEvents = 'none'; // Prevent double-clicking glitch
             clearInterval(countdownTimer);
             transitionToCakeRoom();
         });
